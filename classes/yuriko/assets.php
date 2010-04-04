@@ -74,7 +74,7 @@ class Yuriko_Assets {
 				$attributes = Arr::get($params, 'attributes', NULL);
 
 				$output .= $wrapper[0]."\n";
-				$output .= HTML::style($file, $attributes)."\n";
+				$output .= HTML::script($file, $attributes)."\n";
 				$output .= $wrapper[1]."\n";
 			}
 		}
