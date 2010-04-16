@@ -53,8 +53,8 @@ class Yuriko_Assets {
 		
 		foreach ($this->_assets as $group)
 		{
-			$styles = Arr::get($group, 'css_files', array());
-			$scripts = Arr::get($group, 'js_files', array());
+			$styles = Arr::get($group, 'css', array());
+			$scripts = Arr::get($group, 'js', array());
 
 			// css files
 			foreach ($styles as $file => $params)
