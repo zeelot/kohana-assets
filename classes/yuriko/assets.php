@@ -134,7 +134,7 @@ class Yuriko_Assets {
 			if (substr($pattern, 0, 1) === '^')
 				$pattern = ';'.substr($pattern, 1);
 
-			if (preg_match($pattern, $view_string))
+			if (preg_match('#'.$pattern.'#', $view_string))
 				$this->add_group($key);
 		}
 		$this->_loaded_dependencies = TRUE;
