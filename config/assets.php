@@ -26,7 +26,7 @@ return array
 	 * 	'js' => array
 	 * 	(
 	 * 		'media/js/foobar.js' => array(),
-	 * 	)
+	 * 	),
 	 * 	'weight' => 50,
 	 * 	// rules for when this asset should be included
 	 * 	'pattern' => '^templates/',
