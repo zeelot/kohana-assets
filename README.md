@@ -1,9 +1,15 @@
-# 0.1.x
-This release is purely for maintaining the old version of this module. I do not recommend using any `0.1.x` release but will fix minor bugs for anyone stuck using it. Kohana, being an HMVC framework, supports isolated sub-requests and this branch adds a static class that is not properly isolated within each request. Version `1.0.0` will properly create instances of the `Assets` class for each view rendered. Follow that branch for more information on that development :)
+# Assets
 
-I apologize if the badly thought-out structure of the `Assets` class in this branch has angered you in the past.
+*Define dependencies between assets and views*
 
-Cheers,
+- **Version:** 1.0.0
+- **URL:** <http://github.com/Zeelot/kohana-assets>
 
+## Description
+Create an instance of `Assets` for your views to use to request css and js files. Pass the object to any child view (layout view, page view, and any widget view) for them to request additional assets. Then, after rendering the html, use the object to insert the assets into the header (or footer) of the page.
 
-_Zeelot_
+### Why an instance instead of a static collector class?
+
+Static collector classes quickly fail when you need to keep track of multiple sets of asset requirements. If you are using Views to generate a PDF, you will want to create a new `Assets` instance in order to keep track of the assets the pdf will need to include.
+
+Static collector classes also fail when your application executes sub-requests. There is no clean way to isolate the assets required in each request's response if the collector class is static. Giving your view an instance of `Assets` will make sure that when you render a view, the assets included in that view's header are always only the ones that the view and its sub-views requested.
