@@ -12,24 +12,18 @@
 return array
 (
 	/**
-	 * 'default_styles' => array
+	 * Each group has an array of assets that gets included when the group is requested.
+	 * Weight defaults to 0, lower weighted assets output first.
+	 * Section is just a namespace and can be anything.
+	 *     - head/body are good examples for dividing js you want in <head> or at the end of <body>
+	 *     - it is up to you to output the various sections in the right place
+	 *
+	 * 'group-name' => array
 	 * (
-	 * 	'css' => array
-	 * 	(
-	 * 		'media/css/styles.css' => array(),
-	 * 		'media/css/ie6-styles.css' => array
-	 * 		(
-	 * 			// adds IE 6 conditionals around the stylesheet
-	 * 			'wrapper' => array('<!--[if IE 6]>', '<![endif]-->'),
-	 * 		),
-	 * 	),
-	 * 	'js' => array
-	 * 	(
-	 * 		'media/js/foobar.js' => array(),
-	 * 	),
-	 * 	'weight' => 50,
-	 * 	// rules for when this asset should be included
-	 * 	'pattern' => '^templates/',
+	 *     // array('[style/script]', '[path]', '[section]', [weight]),
+	 *     array('style', 'css/styles.css', 'head'),
+	 *     array('script', 'http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js', 'body'),
+	 *     array('script', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js', 'body', 10),
 	 * ),
 	 */
 );
