@@ -2,141 +2,100 @@
 
 /**
  * The assets class handles loading view dependencies and simple assets.
- * 
+ *
  * @package    YurikoCMS
  * @author     Lorenzo Pisani - Zeelot
- * @copyright  (c) 2008-2009 Lorenzo Pisani
+ * @copyright  (c) 2008-2011 Lorenzo Pisani
  * @license    http://yurikocms.com/license
  */
- 
+
 class Yuriko_Assets {
-	
-	/**
-	 * Asset groups defined in config files
-	 *
-	 * @var array
-	 */
-	protected $_assets = array();
 
 	/**
-	 * Wether or not the dependencies have been calculated
-	 *
-	 * @var bool
+	 * Basic factory method, simply for chaining
 	 */
-	protected $_loaded_dependencies;
-
-	/**
-	 * Returns the instance of the class
-	 *
-	 * @staticvar Assets $instance
-	 * @return Assets
-	 */
-	public static function instance()
+	public static function factory()
 	{
-		static $instance;
-		( ! $instance) AND $instance = new self();
-
-		return $instance;
+		return new Assets();
 	}
 
-	protected function __construct(){}
+	/**
+	 * Group of requested assets
+	 */
+	protected $_requested = array();
 
-	public function render()
+	public function group($name)
 	{
-		// calculate the dependencies just once
-		! $this->_loaded_dependencies AND $this->load_dependencies();
+		// Key to remove duplicates, value for simplicity
+		$this->_requested[$name] = $name;
 
-		// sort the assets
-		usort($this->_assets, array($this, 'sort_assets'));
+		return $this;
+	}
 
-		$output = "\n";
-		
-		foreach ($this->_assets as $group)
+	public function groups(array $names)
+	{
+		foreach ($names as $name)
 		{
-			$styles = Arr::get($group, 'css', array());
-			$scripts = Arr::get($group, 'js', array());
+			$this->group($name);
+		}
 
-			// css files
-			foreach ($styles as $file => $params)
+		return $this;
+	}
+
+	public function get($section = NULL)
+	{
+		$assets = array();
+
+		foreach ($this->_requested as $name)
+		{
+			if (($group = Kohana::config('assets.'.$name)) !== NULL)
 			{
-				$wrapper = Arr::get($params, 'wrapper', array('', ''));
-				$attributes = Arr::get($params, 'attributes', NULL);
-
-				$output .= $wrapper[0]."\n";
-				$output .= HTML::style($file, $attributes)."\n";
-				$output .= $wrapper[1]."\n";
+				foreach ($group as $asset)
+				{
+					if ($asset[2] === $section)
+					{
+						$assets[] = $asset;
+					}
+				}
 			}
-
-			// js files
-			foreach ($scripts as $file => $params)
+			else
 			{
-				$wrapper = Arr::get($params, 'wrapper', array('', ''));
-				$attributes = Arr::get($params, 'attributes', NULL);
-
-				$output .= $wrapper[0]."\n";
-				$output .= HTML::script($file, $attributes)."\n";
-				$output .= $wrapper[1]."\n";
+				// Log a warning
+				Kohana::$log->add(Kohana::INFO, 'Could not find assets group `'.$name.'`');
 			}
 		}
 
-		return $output;
-	}
+		// Sort the assets
+		usort($assets, array($this, '_sort_assets'));
 
-	/**
-	 * Adds an asset group to the list of files to include
-	 *
-	 * @param String $key - config key of the asset group
-	 */
-	public function add_group($key)
-	{
-		$group = Kohana::config('assets.'.$key);
+		$array = array();
+		foreach ($assets as $asset)
+		{
+			if ($asset[0] == 'script')
+			{
+				$array[] = HTML::script($asset[1]);
+			}
+			elseif ($asset[0] == 'style')
+			{
+				$array[] = HTML::style($asset[1]);
+			}
+		}
 
-		$group AND $this->_assets[] = $group;
+		return $array;
 	}
 
 	/**
 	 * Custom sorting method for assets based on 'weight' key
 	 */
-	public function sort_assets($a, $b)
+	protected function _sort_assets($a, $b)
 	{
-        if ($a['weight'] == $b['weight']) {
-            return 0;
-        }
-        return ($a['weight'] > $b['weight']) ? +1 : -1;
-	}
-	
-	/**
-	 * Calculates all the dependencies based on which views were loaded
-	 * for this request. Only runs once per request (should be done at the end)
-	 *
-	 * @param bool $force - will reload dependencies if TRUE
-	 */
-	protected function load_dependencies($force = FALSE)
-	{
-		// run this method the first time only
-		if ($this->_loaded_dependencies AND ! $force)
-			return;
+		( ! isset($a[3])) AND $a[3] = 0;
+		( ! isset($b[3])) AND $b[3] = 0;
 
-		// the Views that where used
-		$views = (array)View::$loaded;
-		$view_string = ';'.implode(';', $views);
-
-		// the assets that where defined
-		$assets = (array)Kohana::config('assets');
-
-		foreach ($assets as $key => $asset)
-		{
-			$pattern = Arr::get($asset, 'pattern');
-			if ($pattern === FALSE)
-				continue;
-
-			// switch any leading ^ to a ; (to match path beginnings in our view_string)
-			if (substr($pattern, 0, 1) === '^')
-				$pattern = ';'.substr($pattern, 1);
-
-			if (preg_match('#'.$pattern.'#', $view_string))
-				$this->add_group($key);
+		if ($a[3] == $b[3]) {
+			return 0;
 		}
-		$this->_loaded_dependencies = TRUE;
+
+		return ($a[3] - $b[3]);
 	}
 } // End Assets
