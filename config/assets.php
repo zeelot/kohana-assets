@@ -20,10 +20,22 @@ return array
 	 *
 	 * 'group-name' => array
 	 * (
-	 *     // array('[style/script]', '[path]', '[section]', [weight]),
+	 *     array('[style/script]', '[path]', '[section]', [weight]),
 	 *     array('style', 'css/styles.css', 'head'),
 	 *     array('script', 'http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js', 'body'),
 	 *     array('script', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js', 'body', 10),
 	 * ),
+	 *
+	 * This group is added like this:
+	 * $assets->group('group-name');
+	 *
+	 * This returns the css file
+	 * $assets->get('head');
+	 *
+	 * This returns the two js files
+	 * $assets->get('body');
+	 *
+	 * If other groups were added and they contained files in 'head' or 'body'
+	 * they would be merged into the array returned by `get()`
 	 */
 );
