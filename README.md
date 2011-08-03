@@ -2,9 +2,9 @@
 
 *Define dependencies between assets and views*
 
-- **Version:** 1.0.0
+- **Version:** 1.1.0
 - **URL:** <http://github.com/Zeelot/kohana-assets>
-- **Compatible Kohana Version(s):** 3.1.x
+- **Compatible Kohana Version(s):** 3.2.x
 
 ## Description
 Create an instance of `Assets` for your views to use to request css and js files. Pass the object to any child view (layout view, page view, and any widget view) for them to request additional assets. Then, after rendering the html, use the object to insert the assets into the header (or footer) of the page.
