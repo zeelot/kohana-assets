@@ -48,7 +48,7 @@ class Yuriko_Assets {
 
 		foreach ($this->_requested as $name)
 		{
-			if (($group = Kohana::config('assets.'.$name)) !== NULL)
+			if (($group = Kohana::$config->load('assets'.$name)) !== NULL)
 			{
 				foreach ($group as $asset)
 				{
