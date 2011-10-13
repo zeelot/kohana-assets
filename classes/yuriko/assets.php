@@ -61,7 +61,7 @@ class Yuriko_Assets {
 			else
 			{
 				// Log a warning
-				Kohana::$log->add(Kohana::INFO, 'Could not find assets group `'.$name.'`');
+				Kohana::$log->add(Log::INFO, 'Could not find assets group `'.$name.'`');
 			}
 		}
 
