@@ -14,15 +14,22 @@ class Yuriko_Assets {
 	/**
 	 * Basic factory method, simply for chaining
 	 */
-	public static function factory()
+	public static function factory(Object $config = NULL)
 	{
-		return new Assets();
+		return new Assets($config);
 	}
 
 	/**
 	 * Group of requested assets
 	 */
 	protected $_requested = array();
+
+	protected $_config;
+
+	public function __construct(ArrayObject $config = NULL)
+	{
+		$this->_config = ($config) ? $config : Kohana::$config->load('assets');
+	}
 
 	public function group($name)
 	{
@@ -48,7 +55,7 @@ class Yuriko_Assets {
 
 		foreach ($this->_requested as $name)
 		{
-			if (($group = Kohana::$config->load('assets.'.$name)) !== NULL)
+			if (($group = Arr::get($this->_config, $name)) !== NULL)
 			{
 				foreach ($group as $asset)
 				{
