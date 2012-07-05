@@ -78,13 +78,20 @@ class Yuriko_Assets {
 		$array = array();
 		foreach ($assets as $asset)
 		{
+			$attributes = Arr::get($asset, 4, array());
+			// This wraps around the style or script tag
+			$wrapper = Arr::get($asset, 5, array('', ''));
+
+			( ! $attributes) AND $attributes = array();
+			( ! $wrapper) AND $wrapper = array('', '');
+
 			if ($asset[0] == 'script')
 			{
-				$array[] = HTML::script($asset[1]);
+				$array[] = $wrapper[0].HTML::script($asset[1], $attributes).$wrapper[1];
 			}
 			elseif ($asset[0] == 'style')
 			{
-				$array[] = HTML::style($asset[1]);
+				$array[] = $wrapper[0].HTML::style($asset[1], $attributes).$wrapper[1];
 			}
 		}
 

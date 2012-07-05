@@ -17,13 +17,16 @@ return array
 	 * Section is just a namespace and can be anything.
 	 *     - head/body are good examples for dividing js you want in <head> or at the end of <body>
 	 *     - it is up to you to output the various sections in the right place
+	 * Attributes is an array of attributes added to the script or style tag
+	 * Wrapper is an array where the first and second strings are wrapped around the tag
 	 *
 	 * 'group-name' => array
 	 * (
-	 *     array('[style/script]', '[path]', '[section]', [weight]),
+	 *     array('[style/script]', '[path]', '[section]', [weight], [attributes], [wrapper]),
 	 *     array('style', 'css/styles.css', 'head'),
 	 *     array('script', 'http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js', 'body'),
 	 *     array('script', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js', 'body', 10),
+	 *     array('script', 'http://example.com/test.js', 'body', 20, array('id' => 'test-script'), array('<!--[if IE 6]>', '<![endif]-->')),
 	 * ),
 	 *
 	 * This group is added like this:
