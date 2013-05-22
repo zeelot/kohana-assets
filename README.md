@@ -42,3 +42,26 @@ In your code, you can mark an asset group for inclusion using `Assets::group()` 
 At this point, you can use `Assets::get()` to retrieve all assets that were added by section.
 
     $assets->get('body'); // Retrieves any asset in the `body` section within all required groups.
+
+## Passing Javascript variables
+
+You can pipeline server-side information into client-side Javascript variables using the `pass` method:
+
+    $this->assets->pass([
+            'route' => [
+                'name'       => Route::name($this->request->route()),
+                'controller' => strtolower($this->request->controller()),
+                'action'     => $this->request->action()
+            ],
+            'url' => [
+                'base'  => URL::base(),
+                'media' => URL::base().Media::uri('/').'/'
+            ],
+            'environment' => Kohana::$environment
+        ]);
+
+When you use `Assets::get()` to retrieve all the `head` assets, data will be encoded like this:
+
+    <script type="text/javascript">window.pass = { "route": { "name": "default", "controller": "Welcome", "action": "index" }, "url": { "base": "/", "media": "/media/kohana/" }, "environment": 40 };</script>
+
+In Javascript, your variables are set and ready to use within the `window.pass` global variable.
