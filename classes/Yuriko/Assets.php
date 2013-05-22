@@ -24,6 +24,11 @@ class Yuriko_Assets {
 	 */
 	protected $_requested = array();
 
+	/**
+	 * @var  array  Collection of variables of pass to JavaScript
+	 */
+	protected $_pass = array();
+
 	protected $_config;
 
 	public function __construct(ArrayObject $config = NULL)
@@ -44,6 +49,28 @@ class Yuriko_Assets {
 		foreach ($names as $name)
 		{
 			$this->group($name);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Pass variable to JavaScript through 'head' section
+	 *
+	 * @param  array  $pairs  An array that will be converted into JSON eventually
+	 * @param  bool   $reset  Reset previous passes?
+	 * @return $this
+	 */
+	public function pass(array $pairs, $reset = FALSE)
+	{
+		if ($reset)
+		{
+			$this->_pass = array();
+		}
+
+		foreach ($pairs as $key => $value)
+		{
+			$this->_pass[$key] = $value;
 		}
 
 		return $this;
@@ -76,6 +103,13 @@ class Yuriko_Assets {
 		usort($assets, array($this, '_sort_assets'));
 
 		$array = array();
+
+		// Prepend pass-through variables to JavaScript
+		if ($section == 'head')
+		{
+			$array[] = $this->_escape_pass();
+		}
+
 		foreach ($assets as $asset)
 		{
 			$attributes = Arr::get($asset, 4, array());
@@ -96,6 +130,17 @@ class Yuriko_Assets {
 		}
 
 		return $array;
+	}
+
+	/**
+	 * Escape pass-through variables as a JavaScript inline block
+	 *
+	 * @return string
+	 */
+	protected function _escape_pass()
+	{
+		$escaped = 'window.pass = '.json_encode($this->_pass).';';
+		return '<script type="text/javascript">'.$escaped.'</script>';
 	}
 
 	/**
